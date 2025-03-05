@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Users, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import VideoPlayer from '@/components/ui/video-player';
 
 interface FeaturedStreamerProps {
   streamer: {
@@ -20,16 +21,25 @@ interface FeaturedStreamerProps {
 }
 
 const FeaturedStreamer = ({ streamer }: FeaturedStreamerProps) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const streamUrl = "https://stream-cdn-iad3.vaughnsoft.net/play/live_sintonia.flv";
+
   return (
     <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-lg group">
-      {/* Background Image */}
+      {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-streamBlack via-streamBlack/70 to-transparent z-10"></div>
+      
+      {/* Video Player or Thumbnail */}
       <div className="absolute inset-0">
-        <img 
-          src={streamer.thumbnailUrl} 
-          alt={streamer.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        {isPlaying ? (
+          <VideoPlayer src={streamUrl} className="w-full h-full" />
+        ) : (
+          <img 
+            src={streamer.thumbnailUrl} 
+            alt={streamer.title} 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        )}
       </div>
 
       {/* Content */}
@@ -68,9 +78,12 @@ const FeaturedStreamer = ({ streamer }: FeaturedStreamerProps) => {
           </div>
 
           <div className="flex space-x-3">
-            <Button className="bg-streamPurple hover:bg-streamPurple-light text-white flex items-center gap-2">
+            <Button 
+              className="bg-streamPurple hover:bg-streamPurple-light text-white flex items-center gap-2"
+              onClick={() => setIsPlaying(!isPlaying)}
+            >
               <Play className="h-4 w-4" />
-              Watch Stream
+              {isPlaying ? 'Stop Stream' : 'Watch Stream'}
             </Button>
             <Button variant="outline" className="border-streamGray-darker text-white hover:bg-white/10">
               Follow
